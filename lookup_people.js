@@ -16,11 +16,10 @@ client.connect((err) => {
   if (err) {
     return console.error("Connection Error", err);
   }
-
-  search_person(process.argv[2]);
+  search_person(process.argv[2], print_person);
 });
 
-function search_person(name){
+function search_person(name, cb){
   client.query("SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text",[name], (err, result) => {
     console.log('Searching...');
 
@@ -29,7 +28,7 @@ function search_person(name){
     }
 
     console.log(`Found (${result.rows.length}) persons by the name \'${name}\'`);
-    print_person(result.rows);
+    cb(result.rows);
     client.end();
   });
 }
